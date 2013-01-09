@@ -9,7 +9,7 @@ viewport:setSize( 640, 960 )
 
 layer = MOAILayer2D.new()
 layer:setViewport( viewport )
-MOAISim.pushRenderPass( layer )
+MOAIRenderMgr.setRenderTable( { layer } )
 
 running = true
 
