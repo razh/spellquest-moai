@@ -1,3 +1,5 @@
+require "util"
+
 Dictionary = {}
 
 function Dictionary:new( location )
@@ -14,11 +16,12 @@ function Dictionary:new( location )
   instance._wordMap = {}
 
   setmetatable( instance, { __index = Dictionary } )
+  instance:createMap()
   return instance
 end
 
 
-function Dictionary:getRandomWord()
+function Dictionary:getRandomWord( word )
   math.randomseed( os.time () )
   math.random()
   return self._wordList[ math.random ( #self._wordList ) ]
@@ -26,7 +29,16 @@ end
 
 
 function Dictionary:getSubWords( word )
-  return nil
+  local array = uniqueArray( self:getSubWordsRecursive( word ) )
+  table.sort( array, function( a, b )
+      if #a == #b then
+        return a < b
+      end
+
+      return #a < #b
+    end
+  )
+  return array;
 end
 
 function Dictionary:getSubWordsRecursive( word )
@@ -34,53 +46,48 @@ function Dictionary:getSubWordsRecursive( word )
     return {}
   end
 
+  local sortedWordArray = split( word )
+  table.sort( sortedWordArray )
+  local sortedWord = join( sortedWordArray )
+
+  local subWordsArray = self._wordMap[ sortedWord ]
+  if nil == subWordsArray then
+    subWordsArray = {}
+  end
+
+  local tempWord, tempWordArray = nil
+  for i = 1, #sortedWordArray do
+    tempWord = sortedWord
+    tempWordArray = split( tempWord )
+    table.remove( tempWordArray, i )
+
+    tempWordArray = self:getSubWordsRecursive( join( tempWordArray ) )
+    for j = 1, #tempWordArray do
+      table.insert( subWordsArray, tempWordArray[j] )
+    end
+  end
+
+  return subWordsArray
 end
 
 function Dictionary:createMap()
-  local key, word = nil
+  local array, key, word = nil
   for i = 1, #self._wordList do
-    print( self._wordList[i])
+    array = split( self._wordList[i] )
+    table.sort( array )
+
+    word = join( array )
+    key = self._wordMap[ word ]
+
+    if nil == key then
+      key = {}
+    end
+
+    table.insert( key, self._wordList[i] )
+    self._wordMap[ word ] = key
   end
 end
 
 function Dictionary:isWord( word )
   return lastIndexOf( self._wordList, word ) ~= -1
-end
-
-function uniqueArray( array )
-  local newArray = {}
-  for i = 1, #array do
-    if ( lastIndexOf( newArray, array[i] ) == -1 ) then
-        table.insert( newArray, array[i] )
-    end
-  end
-
-  return newArray
-end
-
-
--- Helper JavaScript functions.
-function lastIndexOf( array, object )
-  for i = #array, 1, -1 do
-    if object == array[i] then
-      return i
-    end
-  end
-
-  return -1
-end
-
-
-function split( str )
-  local array = {}
-
-  for i = 1, #str do
-    table.insert( array, str:sub( i, i ) )
-  end
-
-  return array
-end
-
-function join( array )
-  return table.concat( array )
 end

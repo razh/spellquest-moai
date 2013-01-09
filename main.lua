@@ -22,6 +22,7 @@ letters = {}
 
 dictionary = Dictionary:new()
 
+
 -- mainThread = MOAICoroutine.new()
 -- mainThread:run(
 --   function()
@@ -32,9 +33,16 @@ dictionary = Dictionary:new()
 --   end
 -- )
 
-print( "that is unwise" )
-uA = uniqueArray({"hello", "hello", "hello", "goodbye", "thank"})
-for i = 1, #uA do
-  print( uA[i] )
+-- test = {"arr","baggage", "mullet", "duck"}
+--   table.sort( test, function( a, b )
+--       if #a == #b then
+--         return a < b
+--       end
+
+--       return #a < #b
+--     end
+--   )
+test = dictionary:getSubWords("roosts")
+for i = 1, #test do
+  print(test[i])
 end
-print( "goodbyers" )
