@@ -9,7 +9,6 @@ function Letter:new()
 
   instance._prop = MOAIProp2D.new()
   instance._prop:setDeck( instance._gfxQuad )
-  instance._prop:moveRot( 270, 2.0 )
 
   instance._char = ""
 

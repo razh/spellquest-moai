@@ -20,13 +20,11 @@ function Dictionary:new( location )
   return instance
 end
 
-
 function Dictionary:getRandomWord( word )
   math.randomseed( os.time () )
   math.random()
   return self._wordList[ math.random ( #self._wordList ) ]
 end
-
 
 function Dictionary:getSubWords( word )
   local array = uniqueArray( self:getSubWordsRecursive( word ) )
