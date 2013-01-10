@@ -9,7 +9,7 @@ local fontSize = 144
 local scale = 2
 
 Letter.font = MOAIFont.new()
-Letter.font:load( '../resources/LibreBaskerville-Regular.ttf' )
+Letter.font:load( 'resources/LibreBaskerville-Regular.ttf' )
 Letter.font:preloadGlyphs( charCode, fontSize * scale )
 
 Letter.style = MOAITextStyle.new()
@@ -23,7 +23,7 @@ local height = 48
 
 Letter.texture = MOAITexture.new()
 Letter.texture:setFilter( MOAITexture.GL_LINEAR_MIPMAP_LINEAR )
-Letter.texture:load( "../resources/debug.png" )
+Letter.texture:load( "resources/debug.png" )
 
 Letter.gfxQuad = MOAIGfxQuad2D.new()
 Letter.gfxQuad:setTexture( Letter.texture )
