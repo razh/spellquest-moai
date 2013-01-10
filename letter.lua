@@ -3,9 +3,13 @@ require "entity"
 
 Letter = inheritsFrom( Entity )
 
+Letter.texture = MOAITexture.new()
+Letter.texture:setFilter( MOAITexture.GL_LINEAR_MIPMAP_LINEAR )
+Letter.texture:load( "resources/debug.png" )
+
 local charCode = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
-local fontSize = 144
+local fontSize = 180
 local scale = 2
 
 Letter.font = MOAIFont.new()
@@ -18,12 +22,20 @@ Letter.style:setFont( Letter.font )
 Letter.style:setSize( fontSize )
 Letter.style:setScale( 1 / scale )
 
+local width = 48
+local height = 48
+
 function Letter:new()
   local instance = Entity:new()
 
   instance._char = ""
   instance._textBox = MOAITextBox.new()
   instance._textBox:setParent( instance:getProp() )
+
+  instance._gfxQuad = MOAIGfxQuad2D.new()
+  instance._gfxQuad:setTexture( Letter.texture )
+  instance._gfxQuad:setRect( -width, -height + 8, width, height + 8 )
+  instance:getProp():setDeck( instance._gfxQuad )
 
   instance._textBox:setStyle( Letter.style )
   instance._textBox:setRect( -128 * scale, -128 * scale, 128 * scale, 128 * scale )

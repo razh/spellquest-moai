@@ -28,15 +28,21 @@ function test()
   action = letter:getProp():moveRot( 180, 1 )
   while action:isBusy() do coroutine:yield() end -- spin lock until action is done
 
-  action = letter:getProp():moveLoc( 64, 0, 2 )
+  action = letter:getProp():moveLoc( 128, 0, 1 )
   while action:isBusy() do coroutine:yield() end
 
   action = letter:getProp():moveScl( -0.5, -0.5, 1 )
   while action:isBusy() do coroutine:yield() end
+
+  action = letter:getProp():moveLoc( -128, 0, 1, 5 )
+  while action:isBusy() do coroutine:yield() end
+
+  action = letter:getProp():moveRot( 180, 1 )
+  while action:isBusy() do coroutine:yield() end
 end
 
 testThread = MOAICoroutine.new()
-testThread:run( test )
+-- testThread:run( test )
 
 letters = {}
 
@@ -102,6 +108,21 @@ layer:insertProp( prop )
 function inputDown()
 end
 
+local mouseX
+local mouseY
+
+function pointerCallback( x, y )
+  -- print( x, y )
+  letter:getProp():setLoc( x / 2 - 160, -y / 2 + 240 )
+end
+
+function clickCallback( down )
+  if down then
+    mouseX = x
+    mouseY = y
+  end
+end
+
 function onKeyDown( key, down )
   if down then
     if 65 <= key and key <= 90 then
@@ -114,4 +135,10 @@ function onKeyDown( key, down )
   end
 end
 
+  -- instance._gfxQuad = MOAIGfxQuad2D.new()
+  -- instance._gfxQuad:setTexture( Entity.texture )
+  -- instance._gfxQuad:setRect( -64, -64, 64, 64 )
+
+MOAIInputMgr.device.pointer:setCallback( pointerCallback )
+MOAIInputMgr.device.mouseLeft:setCallback( clickCallback )
 MOAIInputMgr.device.keyboard:setCallback ( onKeyDown )

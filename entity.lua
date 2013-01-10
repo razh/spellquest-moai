@@ -1,19 +1,10 @@
 Entity = {}
 
-Entity.texture = MOAITexture.new()
-Entity.texture:setFilter( MOAITexture.GL_LINEAR_MIPMAP_LINEAR )
-Entity.texture:load( "resources/debug.png" )
-
 -- Container class for a prop.
 function Entity:new()
   local instance = {}
 
-  instance._gfxQuad = MOAIGfxQuad2D.new()
-  instance._gfxQuad:setTexture( Entity.texture )
-  instance._gfxQuad:setRect( -64, -64, 64, 64 )
-
   instance._prop = MOAIProp2D.new()
-  instance._prop:setDeck( instance._gfxQuad )
 
   setmetatable( instance, { __index = Entity } )
   return instance
@@ -31,7 +22,16 @@ function Entity:getX()
   return self:getProp():getAttr( MOAIProp2D.ATTR_X_LOC )
 end
 
-function Entity:setX()
+function Entity:setX( x )
+  self:getProp():setAttr( MOAIProp2D.ATTR_X_LOC, x )
+end
+
+function Entity:getY()
+  return self:getProp():getAttr( MOAIProp2D.ATTR_Y_LOC )
+end
+
+function Entity:setY( y )
+  self:getProp():setAttr( MOAIProp2D.ATTR_Y_LOC, y )
 end
 
 function Entity:getPosition()
