@@ -6,7 +6,7 @@ function Dictionary:new( location )
   local instance = {}
 
   if nil == location then
-    location = "resources/dictionary.json"
+    location = "../resources/dictionary.json"
   end
 
   local file = assert( io.open( location, "r" ) )
