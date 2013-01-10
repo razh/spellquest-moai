@@ -99,14 +99,14 @@ mainThread:run(
 --       return #a < #b
 --     end
 --   )
--- test = dictionary:getSubWords("roosts")
+test2 = dictionary:getSubWords("roosts")
 -- tes = { 0, 1, 2, 3, 4, 5 }
--- test = fisherYates( tes )
--- print( "YO" )
--- for i = 1, #test do
---   print(test[i])
--- end
--- print( "OY" )
+-- test2 = fisherYates( tes )
+print( "YO" )
+for i = 1, #test2 do
+  print(test2[i])
+end
+print( "OY" )
 
 
 pos = {
@@ -164,6 +164,16 @@ end
   -- instance._gfxQuad:setTexture( Entity.texture )
   -- instance._gfxQuad:setRect( -64, -64, 64, 64 )
 
-MOAIInputMgr.device.pointer:setCallback( pointerCallback )
+-- Mouse
+if MOAIInputMgr.device.pointer then
+  MOAIInputMgr.device.pointer:setCallback( pointerCallback )
+-- Touch
+else
+  MOAIInputMgr.device.touch:setCallback (
+      function ( eventType, idx, x, y, tapCount )
+        pointerCallback( x, y )
+      end
+  )
+end
 -- MOAIInputMgr.device.mouseLeft:setCallback( clickCallback )
 MOAIInputMgr.device.keyboard:setCallback ( onKeyDown )

@@ -1,7 +1,7 @@
 function uniqueArray( array )
   local newArray = {}
   for i = 1, #array do
-    if ( lastIndexOf( newArray, array[i] ) == -1 ) then
+    if lastIndexOf( newArray, array[i] ) == nil then
         table.insert( newArray, array[i] )
     end
   end
