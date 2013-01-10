@@ -25,22 +25,23 @@ Letter.style:setScale( 1 / scale )
 local width = 48
 local height = 48
 
+Letter.gfxQuad = MOAIGfxQuad2D.new()
+Letter.gfxQuad:setTexture( Letter.texture )
+Letter.gfxQuad:setRect( -width, -height + 8, width, height + 8 )
+
+
 function Letter:new()
   local instance = Entity:new()
 
   instance._char = ""
   instance._textBox = MOAITextBox.new()
   instance._textBox:setParent( instance:getProp() )
-
-  instance._gfxQuad = MOAIGfxQuad2D.new()
-  instance._gfxQuad:setTexture( Letter.texture )
-  instance._gfxQuad:setRect( -width, -height + 8, width, height + 8 )
-  instance:getProp():setDeck( instance._gfxQuad )
-
   instance._textBox:setStyle( Letter.style )
   instance._textBox:setRect( -128 * scale, -128 * scale, 128 * scale, 128 * scale )
   instance._textBox:setYFlip( true )
   instance._textBox:setAlignment( MOAITextBox.CENTER_JUSTIFY, MOAITextBox.CENTER_JUSTIFY )
+
+  instance:getProp():setDeck( Letter.gfxQuad )
 
   setmetatable( instance, { __index = Letter } )
   return instance

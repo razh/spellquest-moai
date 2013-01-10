@@ -17,7 +17,7 @@ function lastIndexOf( array, object )
     end
   end
 
-  return -1
+  return nil
 end
 
 function split( str )
@@ -32,4 +32,15 @@ end
 
 function join( array )
   return table.concat( array )
+end
+
+-- Shallow copy.
+function copy( array )
+  local newArray = {}
+
+  for i = 1, #array do
+    newArray[i] = array[i]
+  end
+
+  return newArray
 end

@@ -1,4 +1,4 @@
-require "util"
+require "utils"
 
 Dictionary = {}
 
@@ -87,5 +87,5 @@ function Dictionary:createMap()
 end
 
 function Dictionary:isWord( word )
-  return lastIndexOf( self._wordList, word ) ~= -1
+  return lastIndexOf( self._wordList, word ) ~= nil
 end

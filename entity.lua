@@ -38,7 +38,12 @@ function Entity:getPosition()
   return self._prop:getLoc()
 end
 
-function Entity:setPosition( position )
-  self:setX( position.x )
-  self:setY( position.y )
+function Entity:setPosition( x, y )
+  if nil == y then
+    self:setX( x.x )
+    self:setY( x.y )
+  else
+    self:setX( x )
+    self:setY( y )
+  end
 end

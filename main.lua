@@ -1,5 +1,6 @@
 require "letter"
 require "dictionary"
+require "pool"
 
 MOAISim.openWindow( "SpellQuest", 640, 960 )
 -- MOAISim.setLoopFlags( MOAISim.LOOP_FLAGS_MULTISTEP )
@@ -79,10 +80,14 @@ mainThread:run(
 --       return #a < #b
 --     end
 --   )
-test = dictionary:getSubWords("roosts")
-for i = 1, #test do
-  print(test[i])
-end
+-- test = dictionary:getSubWords("roosts")
+-- tes = { 0, 1, 2, 3, 4, 5 }
+-- test = fisherYates( tes )
+-- print( "YO" )
+-- for i = 1, #test do
+--   print(test[i])
+-- end
+-- print( "OY" )
 
 
 pos = {
@@ -113,7 +118,7 @@ local mouseY
 
 function pointerCallback( x, y )
   -- print( x, y )
-  letter:getProp():setLoc( x / 2 - 160, -y / 2 + 240 )
+  letter:setPosition(x / 2 - 160, -y / 2 + 240 )
 end
 
 function clickCallback( down )
