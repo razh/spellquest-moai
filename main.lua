@@ -2,6 +2,7 @@ require "letter"
 require "dictionary"
 
 MOAISim.openWindow( "SpellQuest", 640, 960 )
+-- MOAISim.setLoopFlags( MOAISim.LOOP_FLAGS_MULTISTEP )
 
 viewport = MOAIViewport.new()
 viewport:setScale( 320, 480 )
@@ -14,24 +15,50 @@ MOAIRenderMgr.setRenderTable( { layer } )
 running = true
 
 letter = Letter:new()
-letter:setChar( "h" )
+letter:setChar( "b" )
 print( letter:getChar() )
 layer:insertProp( letter:getProp() )
+-- letter:getTextBox():setString( "HELLO")
+layer:insertProp( letter:getTextBox() )
+-- letter:getProp():moveLoc( 20, 100, 3.0 )
+
+function test()
+  local action;
+
+  action = letter:getProp():moveRot( 180, 1 )
+  while action:isBusy() do coroutine:yield() end -- spin lock until action is done
+
+  action = letter:getProp():moveLoc( 64, 0, 2 )
+  while action:isBusy() do coroutine:yield() end
+
+  action = letter:getProp():moveScl( -0.5, -0.5, 1 )
+  while action:isBusy() do coroutine:yield() end
+end
+
+testThread = MOAICoroutine.new()
+testThread:run( test )
 
 letters = {}
 
 dictionary = Dictionary:new()
 
-local transform = MOAITransform.new()
-transform:setLoc( 0, 0 )
-letter:getProp():setParent( transform)
+-- local transform = MOAITransform.new()
+-- transform:setLoc( 0, 0 )
+-- letter:getProp():setParent( transform )
 
+print( letter:getProp():getAttr( MOAIProp2D.ATTR_X_LOC ) )
+
+tempCharCode = 65
 mainThread = MOAICoroutine.new()
 mainThread:run(
   function()
     while running do
       -- print( dictionary:getRandomWord() )
-
+      letter:setChar( string.char( tempCharCode ) )
+      tempCharCode = tempCharCode + 1
+      if tempCharCode > 90 then
+        tempCharCode = 65
+      end
       coroutine.yield()
     end
   end
@@ -58,3 +85,33 @@ pos = {
 }
 
 print( pos.x)
+
+function onDraw()
+  MOAIGfxDevice.setPenColor( 1, 0, 0, 1 )
+  MOAIDraw.fillCircle( 0, 0, 20, 32 )
+end
+
+scriptDeck = MOAIScriptDeck.new()
+scriptDeck:setRect( -64, -64, 64, 64 )
+-- scriptDeck:setDrawCallback( onDraw )
+
+prop = MOAIProp2D.new()
+prop:setDeck( scriptDeck )
+layer:insertProp( prop )
+
+function inputDown()
+end
+
+function onKeyDown( key, down )
+  if down then
+    if 65 <= key and key <= 90 then
+      key = key + 32
+    end
+
+    if 97 <= key and key <= 122 then
+      print( string.char(key) )
+    end
+  end
+end
+
+MOAIInputMgr.device.keyboard:setCallback ( onKeyDown )
