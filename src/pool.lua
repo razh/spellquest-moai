@@ -179,17 +179,6 @@ function Pool:shuffle()
   end
 end
 
-function Pool:update()
-  for i = 1, #self._letterEntities do
-    letter = self._letterEntities[i]
-
-    x, y = self:getPosition()
-    letter:setPosition( x + ( i - 1 ) * 48, y )
-    -- letter:getProp():setPos( MOAIProp2D.ATTR_Y_LOC, self:getProp() )
-    -- letter:getProp():setPos( MOAIProp2D.ATTR_Z_ROT, self:getProp() )
-  end
-end
-
 -- Modified form http://developer.coronalabs.com/code/shufflerandomize-tables
 function fisherYates( array )
   local newArray = copy( array )
