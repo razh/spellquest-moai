@@ -34,7 +34,11 @@ running = true
 
 dict = Dictionary:new()
 word = dict:getRandomWord()
+while #word < 5 do
+  word = dict:getRandomWord()
+end
 
+word = "absurd"
 pool = Pool:new()
 pool:setSpacing( 48 )
 pool:setPosition( -120, 160 )
@@ -54,6 +58,7 @@ list:setVerticalSpacing( 16 )
 list:setWords( dict:getSubWords( word ) )
 list:addTo( layer )
 
+list:markWord( "bad")
 
 function test()
   -- local action;

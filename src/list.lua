@@ -5,7 +5,7 @@ require "utils"
 --- Tile
 Tile = inheritsFrom( Entity )
 
-local fontSize = 24
+local fontSize = 18
 local scale = 2
 
 Tile.font = MOAIFont.new()
@@ -19,8 +19,8 @@ Tile.style:setFont( Tile.font )
 Tile.style:setSize( fontSize )
 Tile.style:setScale( 1 / scale )
 
-local width = 8
-local height = 8
+local width = 6
+local height = 6
 
 Tile.emptyTexture = MOAITexture.new()
 Tile.emptyTexture:setFilter( MOAITexture.GL_LINEAR_MIPMAP_LINEAR )
@@ -46,7 +46,7 @@ function Tile:new()
   instance._textBox:setAttrLink( MOAIProp2D.ATTR_X_LOC, instance:getProp() )
   instance._textBox:setAttrLink( MOAIProp2D.ATTR_Y_LOC, instance:getProp() )
   instance._textBox:setAttrLink( MOAIProp2D.ATTR_Z_ROT, instance:getProp() )
-  instance._textBox:setStyle( Letter.style )
+  instance._textBox:setStyle( Tile.style )
   instance._textBox:setRect( -32 * scale, -32 * scale, 32 * scale, 32 * scale )
   instance._textBox:setYFlip( true )
   instance._textBox:setAlignment( MOAITextBox.CENTER_JUSTIFY, MOAITextBox.CENTER_JUSTIFY )
@@ -105,9 +105,6 @@ end
 
 function Word:setLetters( letters )
   self._letters = letters
-  for i = 1, #letters do
-    print( letters[i] )
-  end
   -- self:calculateLetterPositions()
   self:createLetterTiles()
 end
@@ -146,14 +143,20 @@ end
 function Word:addTo( layer )
   Entity.addTo( self, layer )
   for i = 1, #self._letterTiles do
-    self._letterTiles:addTo( layer )
+    self._letterTiles[i]:addTo( layer )
   end
 end
 
 function Word:removeFrom( layer )
   Entity.removeFrom( self, layer )
   for i = 1, #self._letterTiles do
-    self._letterTiles:removeFrom( layer )
+    self._letterTiles[i]:removeFrom( layer )
+  end
+end
+
+function Word:toggle()
+  for i = 1, #self._letterTiles do
+    self._letterTiles[i]:toggle()
   end
 end
 
@@ -241,11 +244,13 @@ function List:calculateWordPositions()
 end
 
 function List:createWordEntities()
+  local horizontalSpacing = self:getHorizontalSpacing()
   local word = nil
   for i = 1, #self._words do
     word = Word:new()
-    word:setLetters( self._words[i] )
-    -- word:setPosition()
+    word:setSpacing( horizontalSpacing )
+    word:setPosition( self._wordPositions[i] )
+    word:setLetters( split( self._words[i] ) )
 
     table.insert( self._wordEntities, word )
     table.insert( self._wasFound, false )
@@ -255,11 +260,7 @@ end
 function List:markWord( word )
   local index = lastIndexOf( self:getWords(), word )
   if index ~= nil and not self._wasFound[ index ] then
-    local x, y = self._wordPositions[ index ]:getPosition()
-    local letterCount = #word
-
-    for i = 1, letterCount do
-    end
+    self._wordEntities[ index ]:toggle()
   end
 end
 
