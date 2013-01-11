@@ -1,58 +1,61 @@
 require "letter"
 require "dictionary"
+require "form"
 require "pool"
 
 MOAISim.openWindow( "SpellQuest", 640, 960 )
+-- MOAISim.openWindow( "SpellQuest", 320, 480 )
+
 -- MOAISim.setLoopFlags( MOAISim.LOOP_FLAGS_MULTISTEP )
 
+WIDTH, HEIGHT = MOAIGfxDevice.getViewSize()
+SCALE_WIDTH = 320
+SCALE_HEIGHT = 480
+scale = SCALE_WIDTH / WIDTH
 viewport = MOAIViewport.new()
-viewport:setScale( 320, 480 )
-viewport:setSize( 640, 960 )
+viewport:setScale( SCALE_WIDTH, SCALE_HEIGHT )
+viewport:setSize( WIDTH, HEIGHT )
 
 layer = MOAILayer2D.new()
 layer:setViewport( viewport )
-MOAIRenderMgr.setRenderTable( { layer } )
+MOAIRenderMgr.setRenderTable({ layer } )
 
 running = true
 
-letter = Letter:new()
-letter:setChar( "b" )
-print( letter:getChar() )
-layer:insertProp( letter:getProp() )
-layer:insertProp( letter:getTextBox() )
+pool = Pool:new()
+pool:setPosition( -120, 160 )
+pool:setLetters( split( "absurd" ) )
+pool:addTo( layer )
 
-letter2 = Letter:new()
-letter2:setChar( "w" )
-layer:insertProp( letter2:getProp() )
-layer:insertProp( letter2:getTextBox() )
--- letter:getTextBox():setString( "HELLO")
-
+fE = FormElement:new()
+fE:setPosition( -120, 100 )
+fE:addTo( layer )
 function test()
-  local action;
+  -- local action;
 
-  action = letter2:getProp():moveLoc( 20, 100, 1.0 )
-  while action:isBusy() do coroutine:yield() end
+  -- action = letter2:getProp():moveLoc( 20, 100, 1.0 )
+  -- while action:isBusy() do coroutine:yield() end
 
-  action = letter2:getProp():moveLoc( -20, -100, 1.0 )
-  while action:isBusy() do coroutine:yield() end
+  -- action = letter2:getProp():moveLoc( -20, -100, 1.0 )
+  -- while action:isBusy() do coroutine:yield() end
+
+  -- -- action = letter:getProp():moveRot( 180, 1 )
+  -- -- while action:isBusy() do coroutine:yield() end -- spin lock until action is done
+
+  -- -- action = letter:getProp():moveLoc( 128, 0, 1 )
+  -- -- while action:isBusy() do coroutine:yield() end
+
+  -- -- action = letter:getProp():moveScl( -0.5, -0.5, 1 )
+  -- -- while action:isBusy() do coroutine:yield() end
+
+  -- -- action = letter:getProp():moveLoc( -128, 0, 1, 5 )
+  -- -- while action:isBusy() do coroutine:yield() end
 
   -- action = letter:getProp():moveRot( 180, 1 )
-  -- while action:isBusy() do coroutine:yield() end -- spin lock until action is done
-
-  -- action = letter:getProp():moveLoc( 128, 0, 1 )
   -- while action:isBusy() do coroutine:yield() end
 
-  -- action = letter:getProp():moveScl( -0.5, -0.5, 1 )
+  -- action = letter:getProp():moveRot( 180, 1 )
   -- while action:isBusy() do coroutine:yield() end
-
-  -- action = letter:getProp():moveLoc( -128, 0, 1, 5 )
-  -- while action:isBusy() do coroutine:yield() end
-
-  action = letter:getProp():moveRot( 180, 1 )
-  while action:isBusy() do coroutine:yield() end
-
-  action = letter:getProp():moveRot( 180, 1 )
-  while action:isBusy() do coroutine:yield() end
 end
 
 testThread = MOAICoroutine.new()
@@ -64,6 +67,20 @@ testThread:run( function()
              end
 )
 
+
+function update()
+  pool:update()
+end
+
+updateThread = MOAICoroutine.new()
+updateThread:run(
+  function()
+    while running do
+      update()
+      coroutine.yield()
+    end
+  end
+)
 letters = {}
 
 dictionary = Dictionary:new()
@@ -72,7 +89,7 @@ dictionary = Dictionary:new()
 -- transform:setLoc( 0, 0 )
 -- letter:getProp():setParent( transform )
 
-print( letter:getProp():getAttr( MOAIProp2D.ATTR_X_LOC ) )
+-- print( letter:getProp():getAttr( MOAIProp2D.ATTR_X_LOC ) )
 
 tempCharCode = 65
 mainThread = MOAICoroutine.new()
@@ -99,14 +116,14 @@ mainThread:run(
 --       return #a < #b
 --     end
 --   )
-test2 = dictionary:getSubWords("roosts")
--- tes = { 0, 1, 2, 3, 4, 5 }
--- test2 = fisherYates( tes )
-print( "YO" )
-for i = 1, #test2 do
-  print(test2[i])
-end
-print( "OY" )
+-- test2 = dictionary:getSubWords("roosts")
+-- -- tes = { 0, 1, 2, 3, 4, 5 }
+-- -- test2 = fisherYates( tes )
+-- print( "YO" )
+-- for i = 1, #test2 do
+--   print(test2[i])
+-- end
+-- print( "OY" )
 
 
 pos = {
@@ -137,7 +154,7 @@ local mouseY
 
 function pointerCallback( x, y )
   -- print( x, y )
-  letter:setPosition(x / 2 - 160, -y / 2 + 240 )
+  -- pool:setPosition( scale * ( x - WIDTH / 2 ), scale * ( -y + HEIGHT / 2 ) )
 end
 
 function clickCallback( down )

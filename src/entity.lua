@@ -35,7 +35,7 @@ function Entity:setY( y )
 end
 
 function Entity:getPosition()
-  return self._prop:getLoc()
+  return self:getProp():getLoc()
 end
 
 function Entity:setPosition( x, y )
@@ -46,4 +46,12 @@ function Entity:setPosition( x, y )
     self:setX( x )
     self:setY( y )
   end
+end
+
+function Entity:addTo( layer )
+  layer:insertProp( self:getProp() )
+end
+
+function Entity:removeFrom( layer )
+  layer:removeProp( self:getProp() )
 end

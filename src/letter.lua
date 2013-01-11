@@ -5,7 +5,7 @@ Letter = inheritsFrom( Entity )
 
 local charCode = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
-local fontSize = 144
+local fontSize = 60
 local scale = 2
 
 Letter.font = MOAIFont.new()
@@ -18,8 +18,8 @@ Letter.style:setFont( Letter.font )
 Letter.style:setSize( fontSize )
 Letter.style:setScale( 1 / scale )
 
-local width = 48
-local height = 48
+local width = 20
+local height = 20
 
 Letter.texture = MOAITexture.new()
 Letter.texture:setFilter( MOAITexture.GL_LINEAR_MIPMAP_LINEAR )
@@ -28,7 +28,6 @@ Letter.texture:load( "resources/debug.png" )
 Letter.gfxQuad = MOAIGfxQuad2D.new()
 Letter.gfxQuad:setTexture( Letter.texture )
 Letter.gfxQuad:setRect( -width, -height, width, height )
-
 
 function Letter:new()
   local instance = Entity:new()
@@ -60,4 +59,14 @@ end
 
 function Letter:getTextBox()
   return self._textBox
+end
+
+function Letter:addTo( layer )
+  Entity.addTo( self, layer )
+  layer:insertProp( self:getTextBox() )
+end
+
+function Letter:removeFrom( layer )
+  Entity.removeFrom( self, layer )
+  layer:removeProp( self:getTextBox() )
 end

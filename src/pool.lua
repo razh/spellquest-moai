@@ -1,7 +1,8 @@
+require "class"
 require "utils"
 require "letter"
 
-Pool = {}
+Pool = inheritsFrom( Entity )
 
 function Pool:new()
   local instance = Entity:new()
@@ -74,11 +75,39 @@ function Pool:setLetters( letters )
 end
 
 function Pool:createLetterEntities()
+  local letter = nil
+  for i = 1, #self:getLetters() do
+    letter = Letter:new()
+    letter:setChar( self:getLetters()[i] )
+    -- letter:setPosition( i * 24, 0 )
+    local x, y = self:getPosition()
+    letter:setPosition( x + ( i - 1 ) * 48, y )
+    -- letter:getProp():setPos( MOAIProp2D.ATTR_Y_LOC, self:getProp() )
+    -- letter:getProp():setPos( MOAIProp2D.ATTR_Z_ROT, self:getProp() )
+
+    table.insert( self._letterEntities, letter )
+    table.insert( self._isUsed, false )
+  end
 end
 
 function Pool:reset()
+  -- Remember to use clearAttrLink()
 end
 
+
+function Pool:addTo( layer )
+  Entity.addTo( self, layer )
+  for i = 1, #self._letterEntities do
+    self._letterEntities[i]:addTo( layer )
+  end
+end
+
+function Pool:removeFrom( layer )
+  Entity.removeFrom( self, layer )
+  for i = 1, #self._letterEntities do
+    self._letterEntities[i]:removeFrom( layer )
+  end
+end
 
 function Pool:shuffle()
   local index = lastIndexOf( self._isUsed, true )
@@ -97,6 +126,19 @@ function Pool:shuffle()
       })
       xPos = xPos + 1
     end
+  end
+end
+
+function Pool:update()
+  local x, y
+  local letter
+  for i = 1, #self._letterEntities do
+    letter = self._letterEntities[i]
+
+    x, y = self:getPosition()
+    letter:setPosition( x + ( i - 1 ) * 48, y )
+    -- letter:getProp():setPos( MOAIProp2D.ATTR_Y_LOC, self:getProp() )
+    -- letter:getProp():setPos( MOAIProp2D.ATTR_Z_ROT, self:getProp() )
   end
 end
 
