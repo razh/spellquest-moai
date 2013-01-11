@@ -235,8 +235,10 @@ function List:calculateWordPositions()
       y = y + yPos
     })
 
-    yPos = yPos + verticalSpacing
-    if y + yPos + padding > maxHeight then
+    yPos = yPos - verticalSpacing
+    -- maxHeight in MOAI world space is reversed.
+    if y + yPos - padding < maxHeight then
+      print( "y", y, " yPos", yPos, " pad ", padding, "maxH", maxHeight )
       xPos = xPos + #self._words[i] * horizontalSpacing + columnSpacing
       yPos = 0
     end
@@ -255,6 +257,15 @@ function List:createWordEntities()
     table.insert( self._wordEntities, word )
     table.insert( self._wasFound, false )
   end
+end
+
+function List:isWord( word )
+  return lastIndexOf( self:getWords(), word )
+end
+
+function List:wasWordFound( word )
+  local index = lastIndexOf( self.getWords(), word )
+  return index ~= nil and self._wasFound[ index ]
 end
 
 function List:markWord( word )

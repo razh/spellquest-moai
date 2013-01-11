@@ -69,7 +69,7 @@ function Form:getWord()
     end
   end
 
-  return word
+  return word:lower()
 end
 
 function Form:createFormElements( letterCount )

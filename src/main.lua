@@ -52,9 +52,12 @@ form:createFormElements( #word )
 form:addTo( layer )
 
 list = List:new()
-list:setPosition( -120, -60 )
+list:setPosition( -120, 56 )
 list:setHorizontalSpacing( 16 )
 list:setVerticalSpacing( 16 )
+list:setColumnSpacing( 16 )
+list:setPadding( 12 )
+list:setMaxHeight( -SCALE_HEIGHT / 2 )
 list:setWords( dict:getSubWords( word ) )
 list:addTo( layer )
 
@@ -195,6 +198,18 @@ function onKeyDown( key, down )
     -- Escape.
     if 27 == key then
       os.exit()
+    end
+
+    -- Enter.
+    if 13 == key then
+      local word = form:getWord()
+      print( word )
+      if list:isWord( word ) then
+        print( "MARK")
+        list:markWord( word )
+      end
+
+      pool:reset()
     end
 
     -- Backspace.
