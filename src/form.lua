@@ -74,7 +74,13 @@ function Form:getFormElements()
   return self._formElements
 end
 
-function Form:getFirstEmptyFormElement()
+function Form:getFirstEmptyFormElement( letter )
+  for i = 1, #self._formElements do
+    if not self._formElements[i]:hasLetter() or
+      letter ~= nil and self._formElements[i]:getLetter() == letter then
+      return self._formElements[i]
+    end
+  end
 end
 
 function Form:addTo( layer )

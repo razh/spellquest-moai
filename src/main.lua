@@ -196,9 +196,13 @@ function onKeyDown( key, down )
       local letter = pool:getLetterByChar( string.char( key ) )
       if letter ~= nil then
         letter:setPosition( form:getFormElements()[1]:getPosition() )
+        local formElement = form:getFirstEmptyFormElement()
+        if formElement ~= nil then
+          formElement:setLetter( letter )
+          letter:setPosition( formElement:getPosition() )
+        end
       end
     end
-
   end
 end
 
