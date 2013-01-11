@@ -17,16 +17,18 @@ FormElement.gfxQuad:setRect( -width, -height, width, height )
 function FormElement:new()
   local instance = Entity:new()
 
+  instance._letter = nil
+
   instance:getProp():setDeck( FormElement.gfxQuad )
 
   setmetatable( instance, { __index = FormElement } )
   return instance
 end
 
-Form = {}
+Form = inheritsFrom( Entity )
 
 function Form:new()
-  local instance = {}
+  local instance = Entity:new()
 
   instance._spacing = 0
   instance._formElements = {}

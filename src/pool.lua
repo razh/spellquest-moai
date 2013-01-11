@@ -130,8 +130,6 @@ function Pool:shuffle()
 end
 
 function Pool:update()
-  local x, y
-  local letter
   for i = 1, #self._letterEntities do
     letter = self._letterEntities[i]
 

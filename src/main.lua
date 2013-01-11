@@ -69,7 +69,7 @@ testThread:run( function()
 
 
 function update()
-  pool:update()
+  -- pool:update()
 end
 
 updateThread = MOAICoroutine.new()
@@ -149,18 +149,32 @@ layer:insertProp( prop )
 function inputDown()
 end
 
+local selected = nil
 local mouseX
 local mouseY
 
 function pointerCallback( x, y )
   -- print( x, y )
+  mouseX = scale * ( x - WIDTH / 2 )
+  mouseY = scale * ( -y + HEIGHT / 2 )
+  if nil ~= selected then
+    selected:setPosition( mouseX, mouseY )
+  end
   -- pool:setPosition( scale * ( x - WIDTH / 2 ), scale * ( -y + HEIGHT / 2 ) )
 end
 
 function clickCallback( down )
   if down then
-    mouseX = x
-    mouseY = y
+    if nil == selected then
+      for i = 1, #pool._letterEntities do
+        if pool._letterEntities[i]:getProp():inside( mouseX, mouseY ) then
+          selected = pool._letterEntities[i]
+          break
+        end
+      end
+    else
+      selected = nil
+    end
   end
 end
 
@@ -184,6 +198,7 @@ end
 -- Mouse
 if MOAIInputMgr.device.pointer then
   MOAIInputMgr.device.pointer:setCallback( pointerCallback )
+  MOAIInputMgr.device.mouseLeft:setCallback( clickCallback )
 -- Touch
 else
   MOAIInputMgr.device.touch:setCallback (
