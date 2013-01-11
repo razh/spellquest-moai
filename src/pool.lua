@@ -24,7 +24,15 @@ function Pool:new()
   return instance
 end
 
-function Pool:getLetterByChar()
+function Pool:getLetterByChar( char )
+  local index = nil
+  for i = 1, #self._letterIndices do
+    index = self._letterIndices[i]
+    if self._letterEntities[ index ]:getChar() == char and not self._isUsed[ index ] then
+      self._isUsed[ index ] = true
+      return self._letterEntities[ index ]
+    end
+  end
 end
 
 function Pool:getSpacing()
@@ -75,15 +83,14 @@ function Pool:setLetters( letters )
 end
 
 function Pool:createLetterEntities()
+  local x, y = self:getPosition()
+  local spacing = self:getSpacing()
+
   local letter = nil
   for i = 1, #self:getLetters() do
     letter = Letter:new()
     letter:setChar( self:getLetters()[i] )
-    -- letter:setPosition( i * 24, 0 )
-    local x, y = self:getPosition()
-    letter:setPosition( x + ( i - 1 ) * 48, y )
-    -- letter:getProp():setPos( MOAIProp2D.ATTR_Y_LOC, self:getProp() )
-    -- letter:getProp():setPos( MOAIProp2D.ATTR_Z_ROT, self:getProp() )
+    letter:setPosition( x + ( i - 1 ) * spacing, y )
 
     table.insert( self._letterEntities, letter )
     table.insert( self._isUsed, false )

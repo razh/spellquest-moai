@@ -22,14 +22,18 @@ MOAIRenderMgr.setRenderTable({ layer } )
 
 running = true
 
+form = Form:new()
+form:setPosition( -120, 100 )
+form:setSpacing( 48 )
+form:createFormElements( 6 )
+form:addTo( layer )
+
 pool = Pool:new()
+pool:setSpacing( 48 )
 pool:setPosition( -120, 160 )
 pool:setLetters( split( "absurd" ) )
 pool:addTo( layer )
 
-fE = FormElement:new()
-fE:setPosition( -120, 100 )
-fE:addTo( layer )
 function test()
   -- local action;
 
@@ -180,14 +184,21 @@ end
 
 function onKeyDown( key, down )
   if down then
-    if 65 <= key and key <= 90 then
-      key = key + 32
+    if 27 == key then
+      os.exit()
     end
 
     if 97 <= key and key <= 122 then
-      letter:setChar( string.char( key ) )
-      print( string.char(key) )
+      key = key - 32
     end
+
+    if 65 <= key and key <= 90 then
+      local letter = pool:getLetterByChar( string.char( key ) )
+      if letter ~= nil then
+        letter:setPosition( form:getFormElements()[1]:getPosition() )
+      end
+    end
+
   end
 end
 
@@ -201,11 +212,18 @@ if MOAIInputMgr.device.pointer then
   MOAIInputMgr.device.mouseLeft:setCallback( clickCallback )
 -- Touch
 else
-  MOAIInputMgr.device.touch:setCallback (
-      function ( eventType, idx, x, y, tapCount )
-        pointerCallback( x, y )
+  MOAIInputMgr.device.touch:setCallback(
+    function( eventType, idx, x, y, tapCount )
+      pointerCallback( x, y )
+      if eventType == MOAITouchSensor.TOUCH_DOWN then
+        clickCallback( true )
+      elseif eventType == MOAITouchSensor.TOUCH_UP then
+        clickCallback( false )
       end
+    end
   )
 end
 -- MOAIInputMgr.device.mouseLeft:setCallback( clickCallback )
-MOAIInputMgr.device.keyboard:setCallback ( onKeyDown )
+if MOAIInputMgr.device.keyboard then
+  MOAIInputMgr.device.keyboard:setCallback ( onKeyDown )
+end

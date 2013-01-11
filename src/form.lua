@@ -25,6 +25,18 @@ function FormElement:new()
   return instance
 end
 
+function FormElement:getLetter()
+  return self._letter
+end
+
+function FormElement:setLetter( letter )
+  self._letter = letter
+end
+
+function FormElement:hasLetter()
+  return self._letter ~= nil
+end
+
 Form = inheritsFrom( Entity )
 
 function Form:new()
@@ -38,10 +50,43 @@ function Form:new()
 end
 
 function Form:getSpacing()
+  return self._spacing
 end
 
 function Form:setSpacing( spacing )
+  self._spacing = spacing
 end
 
-function Form:createFormElements()
+function Form:createFormElements( letterCount )
+  local x, y = self:getPosition()
+  local spacing = self:getSpacing()
+
+  local tempFormElement = nil
+  for i = 1, letterCount do
+    tempFormElement = FormElement:new()
+    tempFormElement:setPosition( x + ( i - 1 ) * spacing, y )
+
+    table.insert( self._formElements, tempFormElement )
+  end
+end
+
+function Form:getFormElements()
+  return self._formElements
+end
+
+function Form:getFirstEmptyFormElement()
+end
+
+function Form:addTo( layer )
+  Entity.addTo( self, layer )
+  for i = 1, #self._formElements do
+    self._formElements[i]:addTo( layer )
+  end
+end
+
+function Form:removeFrom( layer )
+  Entity.removeFrom( self, layer )
+  for i = 1, #self._formElements do
+    self._formElements[i]:removeFrom( layer )
+  end
 end
