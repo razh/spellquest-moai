@@ -3,14 +3,12 @@ require "entity"
 
 Letter = inheritsFrom( Entity )
 
-local charCode = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-
 local fontSize = 60
 local scale = 2
 
 Letter.font = MOAIFont.new()
 Letter.font:load( 'resources/LibreBaskerville-Regular.ttf' )
-Letter.font:preloadGlyphs( charCode, fontSize * scale )
+Letter.font:preloadGlyphs( "ABCDEFGHIJKLMNOPQRSTUVWXYZ", fontSize * scale )
 
 Letter.style = MOAITextStyle.new()
 Letter.style:setColor( 1, 1, 1, 1 )
@@ -43,6 +41,7 @@ function Letter:new()
   instance._textBox:setAlignment( MOAITextBox.CENTER_JUSTIFY, MOAITextBox.CENTER_JUSTIFY )
 
   instance:getProp():setDeck( Letter.gfxQuad )
+  instance:getProp():setPriority(1)
 
   setmetatable( instance, { __index = Letter } )
   return instance

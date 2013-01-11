@@ -124,9 +124,9 @@ end
 
 function Pool:createLetterEntities()
   local letter = nil
-  for i = 1, #self:getLetters() do
+  for i = 1, #self._letters do
     letter = Letter:new()
-    letter:setChar( self:getLetters()[i] )
+    letter:setChar( self._letters[i] )
 
     table.insert( self._letterEntities, letter )
     table.insert( self._isUsed, false )

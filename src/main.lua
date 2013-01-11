@@ -1,4 +1,5 @@
 require "letter"
+require "list"
 require "dictionary"
 require "form"
 require "pool"
@@ -21,18 +22,38 @@ layer:setViewport( viewport )
 MOAIRenderMgr.setRenderTable({ layer } )
 
 running = true
+-- test = {"arr","baggage", "mullet", "duck"}
+--   table.sort( test, function( a, b )
+--       if #a == #b then
+--         return a < b
+--       end
 
-form = Form:new()
-form:setPosition( -120, 100 )
-form:setSpacing( 48 )
-form:createFormElements( 6 )
-form:addTo( layer )
+--       return #a < #b
+--     end
+--   )
+
+dict = Dictionary:new()
+word = dict:getRandomWord()
 
 pool = Pool:new()
 pool:setSpacing( 48 )
 pool:setPosition( -120, 160 )
-pool:setLetters( split( "absurd" ) )
+pool:setLetters( split( word ) )
 pool:addTo( layer )
+
+form = Form:new()
+form:setPosition( -120, 100 )
+form:setSpacing( 48 )
+form:createFormElements( #word )
+form:addTo( layer )
+
+list = List:new()
+list:setPosition( -120, -60 )
+list:setHorizontalSpacing( 16 )
+list:setVerticalSpacing( 16 )
+list:setWords( dict:getSubWords( word ) )
+list:addTo( layer )
+
 
 function test()
   -- local action;
@@ -87,7 +108,6 @@ updateThread:run(
 )
 letters = {}
 
-dictionary = Dictionary:new()
 
 -- local transform = MOAITransform.new()
 -- transform:setLoc( 0, 0 )
@@ -111,23 +131,6 @@ mainThread:run(
   end
 )
 
--- test = {"arr","baggage", "mullet", "duck"}
---   table.sort( test, function( a, b )
---       if #a == #b then
---         return a < b
---       end
-
---       return #a < #b
---     end
---   )
--- test2 = dictionary:getSubWords("roosts")
--- -- tes = { 0, 1, 2, 3, 4, 5 }
--- -- test2 = fisherYates( tes )
--- print( "YO" )
--- for i = 1, #test2 do
---   print(test2[i])
--- end
--- print( "OY" )
 
 
 pos = {

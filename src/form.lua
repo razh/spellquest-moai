@@ -20,6 +20,7 @@ function FormElement:new()
   instance._letter = nil
 
   instance:getProp():setDeck( FormElement.gfxQuad )
+  instance:getProp():setPriority(0)
 
   setmetatable( instance, { __index = FormElement } )
   return instance
