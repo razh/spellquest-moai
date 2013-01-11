@@ -57,6 +57,20 @@ function Form:setSpacing( spacing )
   self._spacing = spacing
 end
 
+function Form:getWord()
+  local word = ""
+
+  local letter = nil
+  for i = 1, #self._formElements do
+    letter = self._formElements[i]:getLetter()
+    if letter ~= nil then
+      word = word .. letter:getChar()
+    end
+  end
+
+  return word
+end
+
 function Form:createFormElements( letterCount )
   local x, y = self:getPosition()
   local spacing = self:getSpacing()
@@ -76,9 +90,26 @@ end
 
 function Form:getFirstEmptyFormElement( letter )
   for i = 1, #self._formElements do
-    if not self._formElements[i]:hasLetter() or
-      letter ~= nil and self._formElements[i]:getLetter() == letter then
+    -- If element is empty or first element that has letter.
+    if not self._formElements[i]:hasLetter() then
+      -- letter ~= nil and self._formElements[i]:getLetter() == letter then
       return self._formElements[i]
+    end
+  end
+end
+
+function Form:getLastUsedFormElement()
+  for i = #self._formElements, 1, -1 do
+    if self._formElements[i]:hasLetter() then
+      return self._formElements[i]
+    end
+  end
+end
+
+function Form:getLastLetter()
+  for i = #self._formElements, 1, -1 do
+    if self._formElements[i]:hasLetter() then
+      return self._formElements[i]:getLetter()
     end
   end
 end

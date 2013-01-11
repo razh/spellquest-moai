@@ -184,8 +184,18 @@ end
 
 function onKeyDown( key, down )
   if down then
+    -- Escape.
     if 27 == key then
       os.exit()
+    end
+
+    -- Backspace.
+    if 127 == key then
+      if #form:getWord() ~= 0 then
+        local formElement = form:getLastUsedFormElement()
+        pool:pushLetter( formElement:getLetter() )
+        formElement:setLetter( nil )
+      end
     end
 
     if 97 <= key and key <= 122 then
@@ -195,11 +205,14 @@ function onKeyDown( key, down )
     if 65 <= key and key <= 90 then
       local letter = pool:getLetterByChar( string.char( key ) )
       if letter ~= nil then
-        letter:setPosition( form:getFormElements()[1]:getPosition() )
         local formElement = form:getFirstEmptyFormElement()
         if formElement ~= nil then
           formElement:setLetter( letter )
-          letter:setPosition( formElement:getPosition() )
+
+          local x, y = formElement:getPosition()
+          x = x - letter:getX()
+          y = y - letter:getY()
+          letter:getProp():moveLoc( x, y, 0.1 )
         end
       end
     end
