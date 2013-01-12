@@ -4,10 +4,15 @@ require "dictionary"
 require "form"
 require "pool"
 
-WIDTH, HEIGHT = MOAIGfxDevice.getViewSize()
+local WIDTH = MOAIEnvironment.horizontalResolution or 640
+local HEIGHT = MOAIEnvironment.verticalResolution or 960
 if WIDTH >= 640 and HEIGHT >= 960 then
+  WIDTH = 640
+  HEIGHT = 960
   MOAISim.openWindow( "SpellQuest", 640, 960 )
 else
+  WIDTH = 320
+  HEIGHT = 480
   MOAISim.openWindow( "SpellQuest", 320, 480 )
 end
 
@@ -181,9 +186,9 @@ function pointerCallback( x, y )
   -- print( x, y )
   mouseX = scale * ( x - WIDTH / 2 )
   mouseY = scale * ( -y + HEIGHT / 2 )
-  if nil ~= selected then
-    selected:setPosition( mouseX, mouseY )
-  end
+  -- if nil ~= selected then
+  --   selected:setPosition( mouseX, mouseY )
+  -- end
   -- pool:setPosition( scale * ( x - WIDTH / 2 ), scale * ( -y + HEIGHT / 2 ) )
 end
 
@@ -198,6 +203,24 @@ function clickCallback( down )
       end
     else
       selected = nil
+    end
+  else
+    if selected ~= nil then
+      local index = lastIndexOf( pool._letterEntities, selected )
+      if not pool._isUsed[ index ] then
+        local formElement = form:getFirstEmptyFormElement( selected )
+        if formElement ~= nil then
+          local newX, newY = formElement:getPosition()
+          newX = newX - selected:getX()
+          newY = newY - selected:getY()
+          selected:getProp():moveLoc( newX, newY, 0.1 )
+
+          formElement:setLetter( selected )
+          pool._isUsed[ index ] = true
+        end
+      else
+        pool:pushLetter( selected )
+      end
     end
   end
 end
