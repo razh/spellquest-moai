@@ -219,6 +219,8 @@ function clickCallback( down )
           pool._isUsed[ index ] = true
         end
       else
+        local formElement = form:getFormElementWithLetter( selected )
+        formElement:setLetter( nil )
         pool:pushLetter( selected )
       end
     end

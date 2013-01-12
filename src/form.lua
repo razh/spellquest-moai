@@ -99,6 +99,16 @@ function Form:getFirstEmptyFormElement( letter )
   end
 end
 
+function Form:getFormElementWithLetter( letter )
+  for i = 1, #self._formElements do
+    if self._formElements[i]:hasLetter() and self._formElements[i]:getLetter() == letter then
+      return self._formElements[i]
+    end
+  end
+
+  return nil
+end
+
 function Form:getLastUsedFormElement()
   for i = #self._formElements, 1, -1 do
     if self._formElements[i]:hasLetter() then
