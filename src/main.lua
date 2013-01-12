@@ -4,12 +4,15 @@ require "dictionary"
 require "form"
 require "pool"
 
-MOAISim.openWindow( "SpellQuest", 640, 960 )
--- MOAISim.openWindow( "SpellQuest", 320, 480 )
+WIDTH, HEIGHT = MOAIGfxDevice.getViewSize()
+if WIDTH >= 640 and HEIGHT >= 960 then
+  MOAISim.openWindow( "SpellQuest", 640, 960 )
+else
+  MOAISim.openWindow( "SpellQuest", 320, 480 )
+end
 
 -- MOAISim.setLoopFlags( MOAISim.LOOP_FLAGS_MULTISTEP )
 
-WIDTH, HEIGHT = MOAIGfxDevice.getViewSize()
 SCALE_WIDTH = 320
 SCALE_HEIGHT = 480
 scale = SCALE_WIDTH / WIDTH
@@ -32,6 +35,8 @@ running = true
 --     end
 --   )
 
+
+
 dict = Dictionary:new()
 word = dict:getRandomWord()
 while #word < 5 do
@@ -51,6 +56,8 @@ form:setSpacing( 48 )
 form:createFormElements( #word )
 form:addTo( layer )
 
+
+
 list = List:new()
 list:setPosition( -120, 56 )
 list:setHorizontalSpacing( 16 )
@@ -62,6 +69,8 @@ list:setWords( dict:getSubWords( word ) )
 list:addTo( layer )
 
 list:markWord( "bad")
+
+
 
 function test()
   -- local action;
@@ -195,6 +204,7 @@ end
 
 function onKeyDown( key, down )
   if down then
+    print( key )
     -- Escape.
     if 27 == key then
       os.exit()
@@ -205,7 +215,6 @@ function onKeyDown( key, down )
       local word = form:getWord()
       print( word )
       if list:isWord( word ) then
-        print( "MARK")
         list:markWord( word )
       end
 
@@ -219,6 +228,11 @@ function onKeyDown( key, down )
         pool:pushLetter( formElement:getLetter() )
         formElement:setLetter( nil )
       end
+    end
+
+    -- `.
+    if 96 == key then
+      print( MOAISim.getMemoryUsage().lua )
     end
 
     if 97 <= key and key <= 122 then

@@ -238,7 +238,6 @@ function List:calculateWordPositions()
     yPos = yPos - verticalSpacing
     -- maxHeight in MOAI world space is reversed.
     if y + yPos - padding < maxHeight then
-      print( "y", y, " yPos", yPos, " pad ", padding, "maxH", maxHeight )
       xPos = xPos + #self._words[i] * horizontalSpacing + columnSpacing
       yPos = 0
     end

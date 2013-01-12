@@ -141,9 +141,65 @@ function Pool:createLetterEntities()
 end
 
 function Pool:reset()
-  -- Remember to use clearAttrLink()
+  local x, y = self:getPosition()
+  local spacing = self:getSpacing()
+
+  local xPos = 0
+  local letter = nil
+  -- New order of letters in pool.
+  local newIndices = {}
+  local formElements = form:getFormElements()
+
+  -- We want the letters in the form to be first.
+  for i = 1, #formElements do
+    if formElements[i]:hasLetter() then
+      letter = formElements[i]:getLetter()
+
+      -- Remove from form element.
+      formElements[i]:setLetter( nil )
+      local newX = x + xPos * spacing
+      local newY = y
+      newX = newX - letter:getX()
+      newY = newY - letter:getY()
+      letter:getProp():moveLoc( newX, newY, 0.1 )
+
+      local index = lastIndexOf( self._letterEntities, letter )
+      if index ~= nil then
+        table.insert( newIndices, index )
+      end
+
+      xPos = xPos + 1
+    end
+  end
+
+  -- Shift letters in pool to the right.
+  for i = 1, #self._letterIndices do
+    local index = self._letterIndices[i]
+    if not self._isUsed[ index ] then
+      letter = self._letterEntities[ index ]
+      table.insert( newIndices, index )
+
+      local newX = x + xPos * spacing
+      local newY = y
+      newX = newX - letter:getX()
+      newY = newY - letter:getY()
+      letter:getProp():moveLoc( newX, newY, 0.1 )
+
+      xPos = xPos + 1
+    end
+  end
+
+  -- Mark all letters as not used.
+  for i = 1, #self._isUsed do
+    self._isUsed[i] = false
+  end
+
+  self._letterIndices = newIndices
 end
 
+function Pool:clear()
+  -- Remember to use clearAttrLink()
+end
 
 function Pool:addTo( layer )
   Entity.addTo( self, layer )
